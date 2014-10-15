@@ -1,0 +1,109 @@
+﻿@model VismaOfficeProduct.Models.Product
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit the product</h2>
+<br/>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Product</legend>
+
+        @Html.HiddenFor(model => model.ProductId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Title)
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Description)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Description)
+            @Html.ValidationMessageFor(model => model.Description)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Price)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Price)<span> $</span>
+            @Html.ValidationMessageFor(model => model.Price)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RebateType)
+        </div>
+        <div class="editor-field">
+            @{
+        var listItems = new List<System.Web.UI.WebControls.ListItem>
+        {
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.None, Value = VismaOfficeProduct.Constant.RebateType.None },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Volume, Value = VismaOfficeProduct.Constant.RebateType.Volume },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Date, Value = VismaOfficeProduct.Constant.RebateType.Date },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Deal, Value = VismaOfficeProduct.Constant.RebateType.Deal }
+        };
+              }
+            @Html.DropDownList("RebateType", new SelectList(listItems , "Value" , "Text"),new {@id = "RebateDropDown"})
+        </div>
+
+        <div id="RebateCreate">
+           @{
+                if (Model.RebateType == VismaOfficeProduct.Constant.RebateType.Volume) { Html.RenderPartial("RebateVolumeEditPartial", (VismaOfficeProduct.Models.RebateVolume)Model.Rebate); }
+                else if (Model.RebateType == VismaOfficeProduct.Constant.RebateType.Date) { Html.RenderPartial("RebateDateEditPartial", (VismaOfficeProduct.Models.RebateDate)Model.Rebate); }
+                else if (Model.RebateType == VismaOfficeProduct.Constant.RebateType.Deal) { Html.RenderPartial("RebateDealEditPartial", (VismaOfficeProduct.Models.RebateDeal)Model.Rebate); }
+                else { }
+                }
+        </div>
+
+        <p>
+            <input id="EditButton" type="submit" value="Save" class="GeneralBtn" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            // Assign Datapicker to the datetime input fields
+            $("#DateTo, #DateFrom").datepicker().change();
+            
+            $("#RebateDropDown").change(function () {
+                $SelectedItem = this.value;
+                if ($SelectedItem == "Deal") { $.get("/Product/RebateDealEditPartial", { "_": $.now() }, function (data) { $("#RebateCreate").replaceWith(data).fadeIn('slow'); }) }
+                else if ($SelectedItem == "Date") {
+                    $.get("/Product/RebateDateEditPartial", { "_": $.now() }, function (data) {
+                        $("#RebateCreate").replaceWith(data).fadeIn('slow');
+                        // Assign Datapicker to the datetime input fields
+                        $("#DateTo, #DateFrom").datepicker().change();
+                    })
+                }
+                else if ($SelectedItem == "Volume") { $.get("/Product/RebateVolumeEditPartial", { "_": $.now() }, function (data) { $("#RebateCreate").replaceWith(data).fadeIn('slow'); }) }
+                else {$("#RebateCreate").replaceWith("<div id='RebateCreate'></div>").fadeIn('slow');}
+            })
+            
+            $("#EditButton").on('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            $RebateTyep = $("#RebateDropDown").val();
+            $.post('/Product/Edit', { ProductId: $("#ProductId").val(), Title: $("#Title").val(), Description: $("#Description").val(), Price: $("#Price").val(), RebateType: $("#RebateDropDown").val(), Percentage: $("#Percentage").val(), Quantity: $("#Quantity").val(), DateFrom: $("#DateFrom").val(), DateTo: $("#DateTo").val() }, function (data) { alert("Submitted") });
+            })
+
+        })
+    </script>
+       
+}

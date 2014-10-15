@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>Visma Test Application  </h1>
+                <h2>Product Office</h2>
+            </hgroup>
+            
+        </div>
+    </section>
+}
+<h3>Users role:</h3>
+<ol class="round">
+    <li class="one">
+        <h5>Admin</h5>
+        Navigate to views for creating, editing and removing product obejcts with different rebate options.
+        @Html.ActionLink("Click here...", "Index", "Product")
+    </li>
+
+    <li class="two">
+        <h5>Customer</h5>
+        Review and buy office products by different rebate conditions.
+        @Html.ActionLink("Click here...", "Index", "Customer")
+    </li>
+
+</ol>

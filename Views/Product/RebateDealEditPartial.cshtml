@@ -1,0 +1,21 @@
+﻿@model VismaOfficeProduct.Models.RebateDeal
+@* Edit partial view for RebateDeal model called by selection change of dropdownlist of the rebate type *@
+
+<div id="RebateCreate">
+
+    <fieldset>
+        <legend>RebateDeal</legend>
+
+        @Html.HiddenFor(model => model.RebateId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Percentage)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Percentage)<span> %</span>
+            @Html.ValidationMessageFor(model => model.Percentage)
+        </div>
+
+    </fieldset>
+</div>
+

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<VismaOfficeProduct.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RebateType)
+        </th>
+        <th>
+            Qty
+        </th>
+        <th>
+            
+        </th>
+        <th>
+            Final Price    
+        </th>
+        <th>
+            Add to Basket    
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr class="zebagrey">
+        <td>
+            <div id="Title_@item.ProductId.ToString()">@Html.DisplayFor(modelItem => item.Title)</div>
+        </td>
+        <td>
+            <div id="Description_@item.ProductId.ToString()">@Html.DisplayFor(modelItem => item.Description)</div>
+        </td>
+        <td>
+            <div id="Price_@item.ProductId.ToString()">@Html.DisplayFor(modelItem => item.Price)<span>$</span></div>
+        </td>
+        <td>
+            <div id="Rebate_@item.ProductId.ToString()">@{Html.RenderAction("RebateInformationPartialView", item);}</div>
+        </td>
+        <td>
+            <input type="number" id="Qty_@item.ProductId.ToString()" style="width:50px" />
+        </td>
+        <td>
+            <input type="button" class="GeneralBtn" id="CalcBtn_@item.ProductId.ToString()" value="Calculate" />
+        </td>
+        <td>
+            <div id="FinalPrice_@item.ProductId.ToString()"></div>
+        </td>
+        <td>
+            <input type="checkbox" id="Basket__@item.ProductId.ToString()" />
+        </td>
+    </tr>
+}
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td>
+        <td>
+            Button is not functional:
+        </td>
+        <td>
+            <input type="button" class="GeneralBtn" value="Add To basket" />
+        </td>
+    </tr>
+
+</table>
+
+
+@section Scripts {
+    
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            
+            // After pressing calculate button, it calls partial view for final price
+            // and replace the view with existing one.
+            // It sends product id and number of ordered items to Calculate controller by post request
+            $('input[type="button"][value="Calculate"]').on('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            var btnId = this.id;
+            var btnIdArray = btnId.split("_")
+            var productId = btnIdArray[1];
+            var qty = $("#Qty_" + productId).val();
+            $.post('/Customer/Calculate', { ProductId: productId, orderedQuantity: qty }, function (data) { $("#FinalPrice_" + productId).empty().append(data); });
+            })
+
+        })
+    </script>
+       
+}

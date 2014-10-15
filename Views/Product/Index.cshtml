@@ -1,0 +1,57 @@
+﻿@model IEnumerable<VismaOfficeProduct.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>List of Products</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+           @Html.DisplayNameFor(model => model.RebateType)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr class="zebagrey">
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)<span>$</span>
+        </td>
+        <td>
+            @* Get the different rebate children model and call different partial view by the selected model *@
+            @{
+                if (item.RebateType == "Volume") { Html.RenderPartial("RebateVolumePartialView", (VismaOfficeProduct.Models.RebateVolume)item.Rebate); }
+                else if (item.RebateType == "Date") { Html.RenderPartial("RebateDatePartialView", (VismaOfficeProduct.Models.RebateDate)item.Rebate); }
+                else if (item.RebateType == "Deal") { Html.RenderPartial("RebateDealPartialView", (VismaOfficeProduct.Models.RebateDeal)item.Rebate); }
+                else { }
+                }
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
+        </td>
+    </tr>
+}
+
+</table>

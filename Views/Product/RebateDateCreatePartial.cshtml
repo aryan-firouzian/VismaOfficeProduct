@@ -1,0 +1,39 @@
+﻿@model VismaOfficeProduct.Models.RebateDate
+@* Create partial view for RebateDate model called by selection change of dropdownlist of the rebate type *@
+
+
+
+    <div id="RebateCreate">
+    <fieldset>
+        <legend>RebateDate</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DateFrom)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.DateFrom, new { @class="datepicker"})
+            @Html.ValidationMessageFor(model => model.DateFrom)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DateTo)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.DateTo, new { @class="datepicker"})
+            @Html.ValidationMessageFor(model => model.DateTo)
+        </div>
+        <div id="CalendarTo"></div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Percentage)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Percentage)<span> %</span>
+            @Html.ValidationMessageFor(model => model.Percentage)
+        </div>
+
+    </fieldset>
+        </div>
+
+
+

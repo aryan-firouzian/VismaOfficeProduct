@@ -1,0 +1,106 @@
+﻿@model VismaOfficeProduct.Models.Product
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create new product</h2>
+<br/>
+<div id="CalendarTest" >
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <div id="create-product">
+    <fieldset>
+        <legend>Product</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Title)
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Description)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Description)
+            @Html.ValidationMessageFor(model => model.Description)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Price)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Price)<span> $</span>
+            @Html.ValidationMessageFor(model => model.Price)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RebateType)
+        </div>
+        <div class="editor-field">
+            @* Populate rebate type dropdownlist with constant variables *@
+            @{
+        var listItems = new List<System.Web.UI.WebControls.ListItem>
+        {
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.None, Value = VismaOfficeProduct.Constant.RebateType.None },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Volume, Value = VismaOfficeProduct.Constant.RebateType.Volume },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Date, Value = VismaOfficeProduct.Constant.RebateType.Date },
+              new System.Web.UI.WebControls.ListItem { Text = VismaOfficeProduct.Constant.RebateType.Deal, Value = VismaOfficeProduct.Constant.RebateType.Deal }
+        };
+              }
+            @Html.DropDownList("RebateType", new SelectList(listItems , "Value" , "Text"),new {@id = "RebateDropDown"})
+        </div>
+
+        <div id="RebateCreate">
+           
+        </div>
+
+        <p>
+            <input id="CreateButton" type="submit" value="Create" class="GeneralBtn" />
+        </p>
+    </fieldset>
+    </div>
+}
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+
+            // Call partial view based for rebate properties input fields on initial rebatetype by get request
+            var dateInput;
+            $("#RebateDropDown").change(function () {
+                $SelectedItem = this.value;
+                if ($SelectedItem == "Deal") { $.get("/Product/RebateDealCreatePartial", { "_": $.now() }, function (data) { $("#RebateCreate").replaceWith(data).fadeIn('slow'); }) }
+                else if ($SelectedItem == "Date") {
+                    $.get("/Product/RebateDateCreatePartial", { "_": $.now() }, function (data) {
+                        $("#RebateCreate").replaceWith(data).fadeIn('slow');
+                        // Assign Datapicker to the datetime input fields
+                        $("#DateTo, #DateFrom").datepicker().change();
+                    })
+                }
+                else if ($SelectedItem == "Volume") { $.get("/Product/RebateVolumeCreatePartial", { "_": $.now() }, function (data) { $("#RebateCreate").replaceWith(data).fadeIn('slow'); }) }
+                else {$("#RebateCreate").replaceWith("<div id='RebateCreate'></div>").fadeIn('slow');}
+            })
+            
+            // It is trigerred by selection change on dropdownlist of rebate type 
+            // Call partial view based for rebate properties input fields on initial rebatetype by get request
+            $("#CreateButton").on('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            $RebateTyep = $("#RebateDropDown").val();
+            $.post('/Product/Create', { Title: $("#Title").val(), Description: $("#Description").val(), Price: $("#Price").val(), RebateType: $("#RebateDropDown").val(), Percentage: $("#Percentage").val(), Quantity: $("#Quantity").val(), DateFrom: $("#DateFrom").val(), DateTo: $("#DateTo").val() }, function (data) { alert("Submitted") });
+            })
+
+        })
+    </script>
+       
+}

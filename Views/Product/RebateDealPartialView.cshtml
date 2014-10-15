@@ -1,0 +1,21 @@
+﻿@model VismaOfficeProduct.Models.RebateDeal
+@* 
+    List partial view for RebateDeal model called by rebate type,
+    Based on the architecture of database, one item in the model is passed to partial view
+    *@
+
+<table>
+    <tr>
+        <th style="font-weight:normal">
+            @Html.DisplayNameFor(model => model.Percentage)<span>:</span>
+        </th>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayFor(model => model.Percentage)<span>%</span>
+        </td>
+    </tr>
+
+
+</table>
